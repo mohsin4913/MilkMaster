@@ -1,4 +1,3 @@
-```python
 import os
 from pathlib import Path
 
@@ -46,4 +45,3 @@ class Config:
 
     # File Upload Limit (16 MB)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-```
