@@ -1,0 +1,66 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+  <div class="card-body">
+    <h3>Settings</h3>
+    <form method="post" class="mt-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3 mt-2">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Default Milk Rate</label>
+          <input class="form-control" name="default_milk_rate" value="{{ default_milk_rate }}" inputmode="decimal">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Currency</label>
+          <input class="form-control" name="currency" value="{{ currency }}">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Theme</label>
+          <input class="form-control" name="theme" value="{{ theme }}">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Language</label>
+          <input class="form-control" name="language" value="{{ language }}">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Auto-delete after days</label>
+          <input class="form-control" type="number" min="1" name="retention_days" value="{{ retention_days }}" inputmode="numeric">
+          <div class="form-text">Records older than this period are automatically removed.</div>
+        </div>
+      </div>
+      <div class="mobile-form-actions mt-4">
+        <button class="btn btn-success">Save Settings</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 rounded-4 h-100">
+      <div class="card-body">
+        <h4 class="mb-2">Backup</h4>
+        <p class="text-muted mb-3">Download a JSON archive of customers, milk entries, payments, expenses, cattle, pregnancies, and settings.</p>
+        <a class="btn btn-outline-success" href="{{ url_for('settings.download_backup') }}">
+          <i class="bi bi-download"></i> Download Backup
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 rounded-4 h-100">
+      <div class="card-body">
+        <h4 class="mb-2">Restore</h4>
+        <p class="text-muted mb-3">Upload a backup JSON file to restore data into the app.</p>
+        <form method="post" action="{{ url_for('settings.restore_backup') }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input class="form-control mb-3" type="file" name="backup_file" accept="application/json,.json" required>
+          <div class="mobile-form-actions">
+            <button class="btn btn-success" type="submit">Restore Backup</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

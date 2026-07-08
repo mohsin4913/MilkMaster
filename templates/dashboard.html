@@ -1,0 +1,125 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="dashboard-hero mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+    <div>
+      <span class="badge rounded-pill bg-white text-success fw-semibold px-3 py-2 mb-3">Operations snapshot</span>
+      <h3 class="mb-2">Keep your dairy business running smoothly</h3>
+      <div class="text-white-50">Live overview of milk sales, balances, expenses, and cattle in one refined workspace.</div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('milk_entries.create_milk_entry') }}" class="btn btn-light text-success fw-semibold">
+        <i class="bi bi-plus-circle"></i> Milk Entry
+      </a>
+      <a href="{{ url_for('payments.create_payment') }}" class="btn btn-outline-light">
+        <i class="bi bi-cash-stack"></i> Payment
+      </a>
+      <a href="{{ url_for('expenses.create_expense') }}" class="btn btn-outline-light">
+        <i class="bi bi-wallet2"></i> Expense
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small">Today's milk sold</div>
+            <h3 class="mt-2 mb-1">{{ today_income }} INR</h3>
+            <div class="text-muted small">{{ today_litres }} litres collected</div>
+          </div>
+          <i class="bi bi-droplet-half stat-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small">Monthly income</div>
+            <h3 class="mt-2 mb-1">{{ monthly_income }} INR</h3>
+            <div class="text-muted small">{{ monthly_litres }} litres this month</div>
+          </div>
+          <i class="bi bi-graph-up-arrow stat-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small">Monthly expenses</div>
+            <h3 class="mt-2 mb-1">{{ monthly_expenses }} INR</h3>
+            <div class="text-muted small">Tracked costs</div>
+          </div>
+          <i class="bi bi-receipt stat-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small">Profit</div>
+            <h3 class="mt-2 mb-1">{{ profit }} INR</h3>
+            <div class="text-muted small">{{ customers }} active customers, {{ cattle_count }} cattle</div>
+          </div>
+          <i class="bi bi-piggy-bank stat-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title mb-0">Recent activity</h5>
+          <a href="{{ url_for('milk_entries.list_milk_entries') }}" class="btn btn-sm btn-outline-success">View all</a>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for entry in recent_entries %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>{{ entry.customer.name }} sold {{ entry.total_litres }} L on {{ entry.entry_date }}</span>
+            <span class="badge text-bg-success">{{ entry.amount }} INR</span>
+          </li>
+          {% else %}
+          <li class="list-group-item text-muted px-0">No entries recorded yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title mb-0">Pending balances</h5>
+          <a href="{{ url_for('customers.list_customers') }}" class="btn btn-sm btn-outline-success">Customers</a>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for customer in pending_balances %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>{{ customer.name }}</span>
+            <span class="badge text-bg-warning">{{ customer.outstanding_balance() }} INR</span>
+          </li>
+          {% else %}
+          <li class="list-group-item text-muted px-0">No pending balances.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

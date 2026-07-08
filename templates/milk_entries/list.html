@@ -1,0 +1,81 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="mobile-page-header d-lg-none mb-3">
+  <div class="d-flex justify-content-between align-items-center gap-2">
+    <h3 class="mb-0">Milk Entries</h3>
+    <a href="{{ url_for('milk_entries.create_milk_entry') }}" class="btn btn-success">Add Entry</a>
+  </div>
+</div>
+<div class="d-none d-lg-flex justify-content-between align-items-center mb-3">
+  <h3>Milk Entries</h3>
+  <a href="{{ url_for('milk_entries.create_milk_entry') }}" class="btn btn-success">Add Entry</a>
+</div>
+<div class="card shadow-sm border-0 rounded-4 desktop-table-wrap">
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>Morning</th>
+          <th>Evening</th>
+          <th>Total</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+        <tr>
+          <td data-label="Date">{{ entry.entry_date }}</td>
+          <td data-label="Customer">{{ entry.customer.name }}</td>
+          <td data-label="Morning">{{ entry.morning_litres }}</td>
+          <td data-label="Evening">{{ entry.evening_litres }}</td>
+          <td data-label="Total">{{ entry.total_litres }}</td>
+          <td data-label="Amount">{{ entry.amount }}</td>
+          <td data-label="Actions">
+            <a href="{{ url_for('milk_entries.edit_milk_entry', entry_id=entry.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="{{ url_for('milk_entries.delete_milk_entry', entry_id=entry.id) }}" method="post" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-muted">No milk entries found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="mobile-list-card d-lg-none mt-3">
+  {% for entry in entries %}
+  <div class="card shadow-sm border-0 rounded-4 mb-3 card-appear">
+    <div class="card-body">
+      <div class="mobile-list-title">
+        <div>
+          <h5>{{ entry.customer.name }}</h5>
+          <div class="mobile-list-meta">
+            <span><i class="bi bi-calendar3"></i> {{ entry.entry_date }}</span>
+            <span><i class="bi bi-droplet"></i> Morning {{ entry.morning_litres }} / Evening {{ entry.evening_litres }}</span>
+          </div>
+        </div>
+        <span class="mobile-summary-pill">{{ entry.amount }} INR</span>
+      </div>
+      <div class="mobile-list-meta">
+        <span><i class="bi bi-scale"></i> Total {{ entry.total_litres }} L</span>
+      </div>
+      <div class="mobile-list-actions">
+        <a href="{{ url_for('milk_entries.edit_milk_entry', entry_id=entry.id) }}" class="btn btn-outline-primary">Edit</a>
+        <form action="{{ url_for('milk_entries.delete_milk_entry', entry_id=entry.id) }}" method="post" class="d-grid w-100">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline-danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card shadow-sm border-0 rounded-4 card-appear"><div class="card-body text-muted">No milk entries found.</div></div>
+  {% endfor %}
+</div>
+{% endblock %}

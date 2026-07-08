@@ -1,0 +1,202 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="mobile-page-header d-lg-none mb-4">
+  <div>
+    <h3 class="mb-1">{{ title }}</h3>
+    <div class="text-muted">{{ start_date }} to {{ end_date }}</div>
+    <div class="small text-muted mt-1">Data older than 60 days is automatically removed. Download reports to keep your own archive.</div>
+  </div>
+  <div class="d-grid gap-2 mt-3">
+    <div class="btn-group">
+      <a href="{{ url_for('reports.reports_home', period='daily') }}" class="btn btn-outline-success {% if period == 'daily' %}active{% endif %}">Daily</a>
+      <a href="{{ url_for('reports.reports_home', period='weekly') }}" class="btn btn-outline-success {% if period == 'weekly' %}active{% endif %}">Weekly</a>
+      <a href="{{ url_for('reports.reports_home', period='monthly') }}" class="btn btn-outline-success {% if period == 'monthly' %}active{% endif %}">Monthly</a>
+      <a href="{{ url_for('reports.reports_home', period='overall') }}" class="btn btn-outline-success {% if period == 'overall' %}active{% endif %}">Overall</a>
+    </div>
+    <a href="{{ url_for('reports.download_report', period='overall') }}" class="btn btn-success">
+      <i class="bi bi-download"></i> Download Overall Report
+    </a>
+  </div>
+</div>
+<div class="d-none d-lg-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h3 class="mb-1">{{ title }}</h3>
+    <div class="text-muted">{{ start_date }} to {{ end_date }}</div>
+    <div class="small text-muted mt-1">Data older than 60 days is automatically removed. Download reports to keep your own archive.</div>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <div class="btn-group">
+      <a href="{{ url_for('reports.reports_home', period='daily') }}" class="btn btn-outline-success {% if period == 'daily' %}active{% endif %}">Daily</a>
+      <a href="{{ url_for('reports.reports_home', period='weekly') }}" class="btn btn-outline-success {% if period == 'weekly' %}active{% endif %}">Weekly</a>
+      <a href="{{ url_for('reports.reports_home', period='monthly') }}" class="btn btn-outline-success {% if period == 'monthly' %}active{% endif %}">Monthly</a>
+      <a href="{{ url_for('reports.reports_home', period='overall') }}" class="btn btn-outline-success {% if period == 'overall' %}active{% endif %}">Overall</a>
+    </div>
+    <a href="{{ url_for('reports.download_report', period='overall') }}" class="btn btn-success">
+      <i class="bi bi-download"></i> Download Overall Report
+    </a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 mobile-dashboard-card">
+      <div class="card-body">
+        <div class="text-muted small">Milk income</div>
+        <h3 class="mt-2 mb-1">{{ milk_total }} INR</h3>
+        <div class="text-muted small">{{ litres_total }} litres</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 mobile-dashboard-card">
+      <div class="card-body">
+        <div class="text-muted small">Payments received</div>
+        <h3 class="mt-2 mb-1">{{ payment_total }} INR</h3>
+        <div class="text-muted small">Customer collections</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 mobile-dashboard-card">
+      <div class="card-body">
+        <div class="text-muted small">Expenses</div>
+        <h3 class="mt-2 mb-1">{{ expense_total }} INR</h3>
+        <div class="text-muted small">Operating costs</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="card shadow-sm border-0 rounded-4 h-100 mobile-dashboard-card">
+      <div class="card-body">
+        <div class="text-muted small">Profit</div>
+        <h3 class="mt-2 mb-1">{{ profit }} INR</h3>
+        <div class="text-muted small">{{ outstanding_total }} INR outstanding</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-lg-7">
+    <div class="card shadow-sm border-0 rounded-4 mobile-dashboard-card">
+      <div class="card-body">
+        <h5 class="card-title">Milk Entries</h5>
+        <div class="table-responsive desktop-report-table">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Litres</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in milk_entries %}
+              <tr>
+                <td data-label="Date">{{ entry.entry_date }}</td>
+                <td data-label="Customer">{{ entry.customer.name }}</td>
+                <td data-label="Litres">{{ entry.total_litres }}</td>
+                <td data-label="Amount">{{ entry.amount }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-muted">No milk entries in this period.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card shadow-sm border-0 rounded-4 mobile-dashboard-card">
+      <div class="card-body">
+        <h5 class="card-title">Customer Ledger</h5>
+        <div class="table-responsive desktop-report-table">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Paid</th>
+                <th>Outstanding</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for customer in customers %}
+              <tr>
+                <td data-label="Customer">{{ customer.name }}</td>
+                <td data-label="Paid">{{ customer.total_paid() }}</td>
+                <td data-label="Outstanding">{{ customer.outstanding_balance() }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="3" class="text-muted">No customers found.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 rounded-4 mobile-dashboard-card">
+      <div class="card-body">
+        <h5 class="card-title">Expenses</h5>
+        <div class="table-responsive desktop-report-table">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for expense in expenses %}
+              <tr>
+                <td data-label="Date">{{ expense.expense_date }}</td>
+                <td data-label="Category">{{ expense.category }}</td>
+                <td data-label="Amount">{{ expense.amount }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="3" class="text-muted">No expenses in this period.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 rounded-4 mobile-dashboard-card">
+      <div class="card-body">
+        <h5 class="card-title">Payments</h5>
+        <div class="table-responsive desktop-report-table">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for payment in payments %}
+              <tr>
+                <td data-label="Date">{{ payment.payment_date }}</td>
+                <td data-label="Customer">{{ payment.customer.name }}</td>
+                <td data-label="Amount">{{ payment.amount }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="3" class="text-muted">No payments in this period.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

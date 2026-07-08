@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+  <div class="card-body">
+    <h3 class="mb-4">{{ 'Edit Milk Entry' if entry else 'Add Milk Entry' }}</h3>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Customer</label>
+          <select class="form-select" name="customer_id" required>
+            {% for customer in customers %}
+            <option value="{{ customer.id }}" {% if entry and entry.customer_id == customer.id %}selected{% endif %}>{{ customer.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Date</label>
+          <input class="form-control" type="date" name="entry_date" value="{{ entry.entry_date if entry else '' }}" required>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Morning Litres</label>
+          <input class="form-control" type="number" step="0.01" min="0" name="morning_litres" value="{{ entry.morning_litres if entry else '' }}" inputmode="decimal">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Evening Litres</label>
+          <input class="form-control" type="number" step="0.01" min="0" name="evening_litres" value="{{ entry.evening_litres if entry else '' }}" inputmode="decimal">
+        </div>
+      </div>
+      <div class="mobile-form-actions mt-4">
+        <button class="btn btn-success">Save Entry</button>
+        <a href="{{ url_for('milk_entries.list_milk_entries') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

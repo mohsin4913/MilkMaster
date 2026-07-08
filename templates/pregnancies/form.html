@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+  <div class="card-body">
+    <h3 class="mb-4">{{ 'Edit Pregnancy' if pregnancy else 'Add Pregnancy' }}</h3>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Cattle</label>
+          <select class="form-select" name="cattle_id" required>
+            {% for item in cattle %}
+            <option value="{{ item.id }}" {% if pregnancy and pregnancy.cattle_id == item.id %}selected{% endif %}>{{ item.name }} ({{ item.tag_number }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Insemination Date</label>
+          <input class="form-control" type="date" name="insemination_date" value="{{ pregnancy.insemination_date if pregnancy else '' }}" required>
+        </div>
+      </div>
+      <div class="mobile-form-actions mt-4">
+        <button class="btn btn-success">Save Pregnancy</button>
+        <a href="{{ url_for('pregnancies.list_pregnancies') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

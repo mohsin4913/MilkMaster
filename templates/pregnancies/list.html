@@ -1,0 +1,79 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="mobile-page-header d-lg-none mb-3">
+  <div class="d-flex justify-content-between align-items-center gap-2">
+    <h3 class="mb-0">Pregnancies</h3>
+    <a href="{{ url_for('pregnancies.create_pregnancy') }}" class="btn btn-success">Add Pregnancy</a>
+  </div>
+</div>
+<div class="d-none d-lg-flex justify-content-between align-items-center mb-3">
+  <h3>Pregnancies</h3>
+  <a href="{{ url_for('pregnancies.create_pregnancy') }}" class="btn btn-success">Add Pregnancy</a>
+</div>
+<div class="card shadow-sm border-0 rounded-4 desktop-table-wrap">
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Cattle</th>
+          <th>Insemination Date</th>
+          <th>Expected Calving</th>
+          <th>Pregnancy Days</th>
+          <th>Remaining Days</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pregnancy in pregnancies %}
+        <tr>
+          <td data-label="Cattle">{{ pregnancy.cattle.name }}</td>
+          <td data-label="Insemination Date">{{ pregnancy.insemination_date }}</td>
+          <td data-label="Expected Calving">{{ pregnancy.expected_calving_date }}</td>
+          <td data-label="Pregnancy Days">{{ pregnancy.pregnancy_days() }}</td>
+          <td data-label="Remaining Days">{{ pregnancy.remaining_days() }}</td>
+          <td data-label="Actions">
+            <a href="{{ url_for('pregnancies.edit_pregnancy', pregnancy_id=pregnancy.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="{{ url_for('pregnancies.delete_pregnancy', pregnancy_id=pregnancy.id) }}" method="post" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">No pregnancy records found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="mobile-list-card d-lg-none mt-3">
+  {% for pregnancy in pregnancies %}
+  <div class="card shadow-sm border-0 rounded-4 mb-3 card-appear">
+    <div class="card-body">
+      <div class="mobile-list-title">
+        <div>
+          <h5>{{ pregnancy.cattle.name }}</h5>
+          <div class="mobile-list-meta">
+            <span><i class="bi bi-calendar3"></i> Insemination: {{ pregnancy.insemination_date }}</span>
+            <span><i class="bi bi-heart"></i> Calving: {{ pregnancy.expected_calving_date or 'Pending' }}</span>
+          </div>
+        </div>
+        <span class="mobile-summary-pill">{{ pregnancy.remaining_days() }} days</span>
+      </div>
+      <div class="mobile-list-meta">
+        <span><i class="bi bi-clock-history"></i> Pregnancy days: {{ pregnancy.pregnancy_days() }}</span>
+      </div>
+      <div class="mobile-list-actions">
+        <a href="{{ url_for('pregnancies.edit_pregnancy', pregnancy_id=pregnancy.id) }}" class="btn btn-outline-primary">Edit</a>
+        <form action="{{ url_for('pregnancies.delete_pregnancy', pregnancy_id=pregnancy.id) }}" method="post" class="d-grid w-100">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline-danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card shadow-sm border-0 rounded-4 card-appear"><div class="card-body text-muted">No pregnancy records found.</div></div>
+  {% endfor %}
+</div>
+{% endblock %}

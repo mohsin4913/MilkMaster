@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+  <div class="card-body">
+    <h3 class="mb-3">Shareable message preview</h3>
+    <p class="text-muted">This message is ready to copy into WhatsApp or SMS.</p>
+    <div class="border rounded p-3 bg-light">
+      {{ message }}
+    </div>
+    <div class="mt-4">
+      <a href="{{ url_for('customers.monthly_statement_pdf', customer_id=customer.id, month=month) }}" class="btn btn-success">Download PDF</a>
+      <a href="{{ url_for('customers.list_customers') }}" class="btn btn-outline-secondary">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="mobile-page-header d-lg-none mb-3">
+  <div class="d-flex justify-content-between align-items-center gap-2">
+    <h3 class="mb-0">Payments</h3>
+    <a href="{{ url_for('payments.create_payment') }}" class="btn btn-success">Add Payment</a>
+  </div>
+</div>
+<div class="d-none d-lg-flex justify-content-between align-items-center mb-3">
+  <h3>Payments</h3>
+  <a href="{{ url_for('payments.create_payment') }}" class="btn btn-success">Add Payment</a>
+</div>
+<div class="card shadow-sm border-0 rounded-4 desktop-table-wrap">
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Mode</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment in payments %}
+        <tr>
+          <td data-label="Date">{{ payment.payment_date }}</td>
+          <td data-label="Customer">{{ payment.customer.name }}</td>
+          <td data-label="Amount">{{ payment.amount }}</td>
+          <td data-label="Mode">{{ payment.payment_mode }}</td>
+          <td data-label="Notes">{{ payment.notes }}</td>
+          <td data-label="Actions">
+            <a href="{{ url_for('payments.edit_payment', payment_id=payment.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="{{ url_for('payments.delete_payment', payment_id=payment.id) }}" method="post" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">No payments found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="mobile-list-card d-lg-none mt-3">
+  {% for payment in payments %}
+  <div class="card shadow-sm border-0 rounded-4 mb-3 card-appear">
+    <div class="card-body">
+      <div class="mobile-list-title">
+        <div>
+          <h5>{{ payment.customer.name }}</h5>
+          <div class="mobile-list-meta">
+            <span><i class="bi bi-calendar3"></i> {{ payment.payment_date }}</span>
+            <span><i class="bi bi-wallet2"></i> {{ payment.payment_mode }}</span>
+          </div>
+        </div>
+        <span class="mobile-summary-pill">{{ payment.amount }} INR</span>
+      </div>
+      <div class="mobile-list-meta">
+        <span><i class="bi bi-chat-left-text"></i> {{ payment.notes or 'No notes' }}</span>
+      </div>
+      <div class="mobile-list-actions">
+        <a href="{{ url_for('payments.edit_payment', payment_id=payment.id) }}" class="btn btn-outline-primary">Edit</a>
+        <form action="{{ url_for('payments.delete_payment', payment_id=payment.id) }}" method="post" class="d-grid w-100">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline-danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card shadow-sm border-0 rounded-4 card-appear"><div class="card-body text-muted">No payments found.</div></div>
+  {% endfor %}
+</div>
+{% endblock %}
