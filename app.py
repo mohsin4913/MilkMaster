@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -44,8 +45,8 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
-        from models.setting import Setting
 
+        from models.setting import Setting
         Setting.ensure_defaults()
 
     @app.before_request
@@ -59,4 +60,9 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )

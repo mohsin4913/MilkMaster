@@ -892,3 +892,24 @@ body.page-transition {
     display: none !important;
   }
 }
+/* ===== Mobile Header Dark Mode Fix ===== */
+
+body.theme-dark .mobile-topbar{
+    background:#ffffff !important;
+}
+
+body.theme-dark .mobile-topbar-title{
+    color:#173d2a !important;
+}
+
+body.theme-dark .mobile-topbar-subtitle{
+    color:#5f7668 !important;
+}
+
+body.theme-dark .mobile-menu-button{
+    color:#ffffff !important;
+}
+
+body.theme-dark .mobile-topbar *{
+    color:inherit;
+}
